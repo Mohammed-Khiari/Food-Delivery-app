@@ -1,94 +1,28 @@
-import React, { useEffect } from "react";
-import style from './style.css'
-import Die from "./components/Die";
-import { nanoid } from "nanoid";
-import Confetti from "react-confetti";
+ 
+import React from 'react'
+import { Header, CreateContainer, MainContainer } from './components'
+import { Routes, Route } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 
 
-export default function App() {
+const App = () => {
+  return (
+    <AnimatePresence mode="wait" >
+      <div className="w-screen h-auto flex flex-col bg-primary">
+        <Header/>
 
-    const [dice, setDice] = React.useState(allNewDice())
-    const [tenzies, setTenzies] = React.useState(false)
+        <main className="mt-16 md:mt-20 px-4 md:px-16 py-4 w-full"> 
+          <Routes>
+            <Route path='/*' element={<MainContainer/>}/>
+            <Route path='/createItem' element={<CreateContainer/>}/>
+          </Routes> 
+        </main>
+      </div>
+    </AnimatePresence>
+  ) 
+}
 
-    const diceElements = dice.map(die => <Die 
-                                            key={die.id} 
-                                            value = {die.value}
-                                            isHeld = {die.isHeld}
-                                            holdDice = {()=> holdDice(die.id)}
+export default App
 
-
-
-                                           />)     
-    function generateNewDie() {
-        return {
-                value: Math.ceil(Math.random() * 6),
-                isHeld: false,
-                id: nanoid()
-            } 
-    }
-   
-   function allNewDice() {
-        const newDice = [] 
-            for (let i=0; i<10; i++) {
-
-            // generate an array of random numbers from 1 to 6: ceil is starting from 1 ::: floor is starting from 0: 
-            newDice.push(
-                generateNewDie()
-                )
-            }
-        return newDice
-   }
 
  
-    
-function rollDice() {
-    if (!tenzies) {
-        setDice(oldDice => oldDice.map((die) => {
-            return die.isHeld
-                ? die
-                : generateNewDie()
-            }))
-    } else {
-        setTenzies(false)
-        setDice(allNewDice())
-    }   
-  
-   
-}
-
-
-
-function holdDice(id) {
-    setDice((oldDice) => oldDice.map((die)=>{
-            return (die.id === id)
-                ? {...die, isHeld: !die.isHeld}
-                : die
-        })
-    )
-}
-
-
-useEffect(() => {
-    
-     const allHeld = dice.every(die => die.isHeld)
-     const firstValue = dice[0].value
-     const allSameValue = dice.every(die => die.value === firstValue)
-     if (allHeld && allSameValue) {
-        setTenzies(true)
-    }   
-}, [dice])
-    
-
-
-    return(
-        <main>
-            {tenzies && <Confetti />}
-            <h1 className="title">Tenzies</h1>
-            <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls. </p>
-           <div className="dice-container">
-               {diceElements}
-           </div> 
-           <button className="roll-dice"     onClick={rollDice} >{tenzies? 'New Game': 'Roll'}</button>
-        </main>
-    )
-}
