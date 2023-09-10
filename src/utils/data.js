@@ -64,10 +64,5 @@ export const categories = [
     id: 6,
     name: "Soft Drinks",
     urlParmName: "drinks ",
-  },
-  {
-    id: 7,
-    name: "Icecream",
-    urlParmName: "icecream",
   }
 ];

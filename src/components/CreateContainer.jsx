@@ -17,7 +17,9 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { storage } from "../firebase.config";
-import { saveItem } from "../utils/firebaseFanctions";
+import { getAllFoodItems, saveItem } from "../utils/firebaseFanctions";
+import { actionType } from "../context/reducer";
+import { useStateValue } from "../context/StateProvider";
 
 const CreateContainer = () => {
   const [title, setTitle] = useState("");
@@ -29,6 +31,7 @@ const CreateContainer = () => {
   const [alertStatus, setAlertStatus] = useState("danger");
   const [msg, setMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [{ foodItems }, dispatch] = useStateValue();
 
   const uploadimage = (e) => {
     setIsLoading(true);
@@ -78,7 +81,7 @@ const CreateContainer = () => {
       setAlertStatus("success");
       setTimeout(() => {
         setFields(false);
-      }, 7000);
+      }, 4000);
     });
   };
   const saveDetails = () => {
@@ -98,11 +101,19 @@ const CreateContainer = () => {
           title: title,
           imageURL: imageAsset,
           category: category,
-          categories: categories,
+          calories: calories,
           qty: 1,
           price: price,
         };
-        saveItem(data)
+        saveItem(data);
+        setIsLoading(false);
+        setFields(true);
+        setMsg("Image uploaded successfully 🥰");
+        clearData();
+        setAlertStatus("success");
+        setTimeout(() => {
+          setFields(false);
+        }, 4000);
       }
     } catch (error) {
       console.log(error);
@@ -114,6 +125,24 @@ const CreateContainer = () => {
         setIsLoading(false);
       }, 4000);
     }
+    fetchData();
+  };
+
+  const clearData = () => {
+    setTitle("");
+    setImageAsset(null);
+    setCalories("");
+    setPrice("");
+    setCategory("Select Category");
+  };
+
+  const fetchData = async () => {
+    await getAllFoodItems().then((data) => {
+      dispatch({
+        type: actionType.SET_FOOD_ITEMS,
+        foodItems: data,
+      });
+    });
   };
 
   return (

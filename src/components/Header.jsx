@@ -30,6 +30,7 @@ const Header = () => {
     } else {
       setisManu(!isManu);
     }
+    
   };
 
   const logout = () => {
