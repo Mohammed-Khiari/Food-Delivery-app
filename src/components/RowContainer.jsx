@@ -1,10 +1,48 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { MdShoppingBasket } from "react-icons/md";
 import { motion } from "framer-motion";
 import NotFound from "../images/NotFound.svg";
+import { useStateValue } from "../context/StateProvider";
+import { actionType } from "../context/reducer";
+
 
 const RowContainer = forwardRef(({ flag, data }, ref) => {
-  console.log(data);
+  const [{ cartItems }, dispatch] = useStateValue();
+
+  const [items, setItems] = useState([]);
+
+  const addToCart = () => {
+    dispatch({
+      type: actionType.SET_CARTITEMS,
+      cartItems: items,
+    });
+    localStorage.setItem("cartItems", JSON.stringify(items));
+  };
+  // add the clicked item to the card
+  useEffect(() => {
+    addToCart();
+  }, [items]);
+  
+
+  
+  const updateItems = (item) => {
+    if (cartItems.length > 0) {
+      // check if item elready exist in the cart item:
+      if (
+        cartItems.find((cartItem) => {
+          return cartItem.id == item.id
+        })
+      ) {
+      } else {
+        setItems([...cartItems, item]);
+      }
+
+     
+    } else {
+      setItems([...cartItems, item]);
+    }
+  };
+
   return (
     <div
       ref={ref}
@@ -18,7 +56,8 @@ const RowContainer = forwardRef(({ flag, data }, ref) => {
         data.map((item) => (
           <div
             key={item?.id}
-            className="w-300 min-w-[300px] md:w-340 md:min-w-[340px] bg-cardOverlay rounded-lg my-12 backdrop-blur-lg hover:drop-shadow-lg"
+            className="w-300 min-w-[300px] md:w-340 md:min-w-[340px] bg-cardOverlay
+             rounded-lg my-12 backdrop-blur-lg hover:drop-shadow-lg"
           >
             <div className="w-full flex items-center justify-between">
               <motion.img
@@ -29,6 +68,7 @@ const RowContainer = forwardRef(({ flag, data }, ref) => {
               />
               <motion.div
                 whileTap={{ scale: 0.75 }}
+                onClick={() => updateItems(item)}
                 className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center"
               >
                 <MdShoppingBasket className="text-xl text-white cursor-pointer hover:shadow-md" />

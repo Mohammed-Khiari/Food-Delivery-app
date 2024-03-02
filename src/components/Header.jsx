@@ -14,7 +14,7 @@ const Header = () => {
   const firebaseAuth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user, cartShow, cartItems }, dispatch] = useStateValue();
   const [isManu, setisManu] = useState(false);
 
   const login = async () => {
@@ -30,16 +30,22 @@ const Header = () => {
     } else {
       setisManu(!isManu);
     }
-    
   };
 
   const logout = () => {
     setisManu(false);
+    localStorage.clear();
     dispatch({
       type: actionType.SET_USER,
       user: null,
     });
-    localStorage.clear();
+  };
+
+  const showCart = () => {
+    dispatch({
+      type: actionType.SET_CART_SHOW,
+      cartShow: !cartShow,
+    });
   };
   return (
     <header className="fixed z-50 w-screen p-3 px-4 md:p-6 md:px-16 bg-primary">
@@ -81,14 +87,21 @@ const Header = () => {
               Service
             </li>
           </motion.ul>
-          <div className="relative flex items-center justify-center">
+          <div
+            className="relative flex items-center justify-center"
+            onClick={showCart}
+          >
             <MdShoppingBasket className=" text-textColor text-2xl cursor-pointer" />
-            <div
-              className="h-5 w-5 rounded-full absolute -top-3 -right-3 bg-cartNumBg flex 
+            {cartItems && cartItems.length > 0 && (
+              <div
+                className="h-5 w-5 rounded-full absolute -top-3 -right-3 bg-cartNumBg flex 
               items-center justify-center"
-            >
-              <p className="text-xs text-white font-semibold">2</p>
-            </div>
+              >
+                <p className="text-xs text-white font-semibold">
+                  {cartItems.length}
+                </p>
+              </div>
+            )}
           </div>
           <div className="relative">
             <motion.img
@@ -105,7 +118,7 @@ const Header = () => {
                 exit={{ opacity: 0, scale: 0.6 }}
                 className="w-40 bg-gray-50 shadow-xl rounded-lg absolute top-12 right-0  flex flex-col"
               >
-                {user && user.email === "khiari1905@gmail.com" && (
+                {user && (
                   <Link to={"/createItem"}>
                     <p
                       className=" px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-100 
@@ -134,13 +147,20 @@ const Header = () => {
       {/* mobile */}
       <div className="flex items-center justify-between md:hidden w-full h-full">
         <div className="relative flex items-center justify-center">
-          <MdShoppingBasket className=" text-textColor text-2xl cursor-pointer" />
-          <div
-            className="h-5 w-5 rounded-full absolute -top-3 -right-3 bg-cartNumBg flex 
+          <MdShoppingBasket
+            className=" text-textColor text-2xl cursor-pointer"
+            onClick={showCart}
+          />
+          {cartItems && cartItems.length > 0 && (
+            <div
+              className="h-5 w-5 rounded-full absolute -top-3 -right-3 bg-cartNumBg flex 
               items-center justify-center"
-          >
-            <p className="text-xs text-white font-semibold">2</p>
-          </div>
+            >
+              <p className="text-xs text-white font-semibold">
+                {cartItems.length}
+              </p>
+            </div>
+          )}
         </div>
         <Link to={"/"} className="flex items-center gap-2">
           <img src={Logo} className="w-8 object-cover" alt="logo" />

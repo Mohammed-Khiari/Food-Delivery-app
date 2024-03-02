@@ -70,7 +70,7 @@ const MenuContainer = ({ flag, data }, ref) => {
         />
       </div>            
 
-      {/* I stopped 6:24 */}
+      
     </section>
   );
 };

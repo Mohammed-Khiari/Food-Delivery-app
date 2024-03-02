@@ -23,7 +23,7 @@ const App = () => {
   }, []);
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" >
       <div className="w-screen h-auto flex flex-col bg-primary">
         <Header />
 

@@ -158,7 +158,7 @@ const CreateContainer = () => {
             exit={{ opacity: 0 }}
             className={`w-full p-2 rounded-lg text-center text-lg font-semibold  ${
               alertStatus === "danger"
-                ? "bg-red-400 text-red- 800"
+                ? "bg-red-400 text-red-800"
                 : "bg-emerald-400 text-emerald-800"
             }`}
           >
@@ -173,8 +173,8 @@ const CreateContainer = () => {
           <input
             type="text"
             required
-            value={title}
             onChange={(e) => setTitle(e.target.value)}
+            value={title}
             placeholder=" Give me a title..."
             className="w-full h-full text-lg bg-transparent outline-none 
             border-none placeholder:text-gray-400 text-textColor"
